@@ -1,4 +1,12 @@
-
+import React from 'react';
+import Header from './components/Header';
+import BillSummary from './components/BillSummary';
+import PixPayment from './components/PixPayment';
+import BillDetails from './components/BillDetails';
+import Footer from './components/Footer';
+import PixInstructionModal from './components/PixInstructionModal';
+import PixKeyManagement from './components/PixKeyManagement';
+import { ModalProvider } from './context/ModalContext';
 
 function App() {
   return (
