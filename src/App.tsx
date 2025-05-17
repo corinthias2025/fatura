@@ -8,8 +8,12 @@ import PixInstructionModal from './components/PixInstructionModal';
 import PixKeyManagement from './components/PixKeyManagement';
 import { ModalProvider } from './context/ModalContext';
 
-function App() {
+function App({ Component, pageProps }) {
   return (
+    <>
+      <FacebookPixel />
+      <Component {...pageProps} />
+    </>
     <ModalProvider>
       <div className="min-h-screen bg-gray-50">
         <Header />
