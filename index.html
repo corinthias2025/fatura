@@ -1,605 +1,160 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MinhaClaro - Fatura</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-        
-        body {
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-            padding: 0px;
-        }
-        
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-        
-        h1 {
-            color: #0066cc;
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        
-        h2 {
-            font-size: 20px;
-            margin: 15px 0;
-            color: #333;
-        }
-        
-        h3 {
-            font-size: 18px;
-            margin: 10px 0;
-            color: #555;
-        }
-        
-        hr {
-            border: none;
-            border-top: 1px solid #eee;
-            margin: 15px 0;
-        }
-        
-        .fatura {
-            margin-bottom: 20px;
-        }
-        
-        .fatura-residencial {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .valor-fatura {
-            font-size: 28px;
-            font-weight: bold;
-            color: black;
-            margin: 10px 0;
-        }
-        
-        .checkbox {
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-        }
-        
-        .checkbox input {
-            margin-right: 10px;
-        }
-        
-        .pix {
-            background: #f0f7ff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .codigo-pix {
-            background: white;
-            padding: 10px;
-            border: 1px dashed black;
-            border-radius: 5px;
-            font-family: monospace;
-            word-break: break-all;
-            margin: 10px 0;
-            user-select: all;
-        }
-        
-        .codigo-pix::selection {
-            background: #0066cc;
-            color: white;
-        }
-        
-        .btn-copiar {
-            background: red;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 10px;
-            transition: all 0.3s;
-        }
-        
-        .btn-copiar:hover {
-            background: black;
-            transform: translateY(-1px);
-        }
-        
-        .btn-copiar:active {
-            transform: translateY(0);
-        }
-        
-        .opcoes-pagamento {
-            margin: 20px 0;
-        }
-        
-        .opcao {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        
-        .opcao:hover {
-            background: #f8f8f8;
-        }
-        
-        .opcao:last-child {
-            border-bottom: none;
-        }
-        
-        .resumo-fatura {
-            margin: 20px 0;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-        }
-        
-        table td {
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        table td:last-child {
-            text-align: right;
-            font-weight: bold;
-        }
-        
-        footer {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 12px;
-            color: #777;
-        }
-        
-        .links-rodape {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-        
-        .links-rodape a {
-            color: #0066cc;
-            text-decoration: none;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fatura Claro - Maio 2025</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
 
-        /* Overlay de fundo */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease-out;
-        }
+    body {
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
 
-        .overlay.active {
-            opacity: 1;
-        }
+    header {
+      background-color: #e30613;
+      width: 100%;
+      padding: 15px 30px;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
 
-        /* Card principal */
-        .pix-instruction-card {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.95);
-            background: #ffffff;
-            width: 90%;
-            max-width: 450px;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 35px rgba(0, 38, 77, 0.2);
-            z-index: 1001;
-            display: none;
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-            border: 1px solid rgba(0, 102, 204, 0.15);
-        }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-top: 30px;
+    }
 
-        .pix-instruction-card.active {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
+    .titulo {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
 
-        /* CabeÃ§alho do card */
-        .pix-card-header {
-            text-align: center;
-            margin-bottom: 20px;
-            position: relative;
-        }
+    .valor {
+      font-size: 32px;
+      font-weight: bold;
+      color: #1a1a1a;
+      margin: 10px 0;
+    }
 
-        .pix-success-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #e6f2ff, #cce5ff);
-            border-radius: 50%;
-            margin-bottom: 15px;
-            animation: iconEnter 0.6s ease-out;
-        }
+    .vencimento {
+      color: #555;
+      font-size: 14px;
+    }
 
-        .pix-success-icon svg {
-            width: 30px;
-            height: 30px;
-            fill: #0066cc;
-        }
+    .pix-box {
+      background-color: #f2faff;
+      border: 1px solid #c6e2ff;
+      padding: 15px;
+      margin: 25px 0;
+      border-radius: 8px;
+    }
 
-        .pix-card-title {
-            color: #0066cc;
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
+    .pix-code {
+      font-family: monospace;
+      background: #fff;
+      border: 1px dashed #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      word-break: break-all;
+      border-radius: 6px;
+      font-size: 14px;
+    }
 
-        .pix-card-subtitle {
-            color: #555;
-            font-size: 15px;
-            line-height: 1.5;
-        }
+    button.copy-btn {
+      background-color: #e30613;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-        /* Corpo do card */
-        .pix-card-body {
-            margin: 20px 0;
-        }
+    button.copy-btn:hover {
+      background-color: #b8000f;
+    }
 
-        .pix-steps {
-            list-style: none;
-            counter-reset: step-counter;
-            padding: 0;
-            margin: 0;
-        }
+    .resumo {
+      font-size: 15px;
+      margin-top: 25px;
+    }
 
-        .pix-step {
-            position: relative;
-            padding-left: 40px;
-            margin-bottom: 20px;
-            color: #444;
-            line-height: 1.5;
-            counter-increment: step-counter;
-        }
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      text-align: center;
+      color: #777;
+    }
 
-        .pix-step:before {
-            content: counter(step-counter);
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 28px;
-            height: 28px;
-            background-color: #0066cc;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .pix-step strong {
-            color: #0066cc;
-            font-weight: 600;
-        }
-
-        /* RodapÃ© do card */
-        .pix-card-footer {
-            text-align: center;
-            margin-top: 25px;
-        }
-
-        .pix-confirm-btn {
-            background: linear-gradient(to right, #0066cc, #0088ff);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.25);
-            width: 100%;
-            max-width: 220px;
-        }
-
-        .pix-confirm-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 102, 204, 0.35);
-        }
-
-        .pix-confirm-btn:active {
-            transform: translateY(0);
-        }
-
-        /* AnimaÃ§Ãµes */
-        @keyframes iconEnter {
-            0% {
-                transform: scale(0);
-                opacity: 0;
-            }
-            70% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.4);
-            }
-            70% {
-                box-shadow: 0 0 0 15px rgba(0, 102, 204, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(0, 102, 204, 0);
-            }
-        }
-
-        .pix-pulse {
-            animation: pulse 2s infinite;
-        }
-
-        /* Responsividade */
-        @media (max-width: 480px) {
-            .pix-instruction-card {
-                padding: 22px;
-                border-radius: 12px;
-            }
-            
-            .pix-success-icon {
-                width: 50px;
-                height: 50px;
-                margin-bottom: 12px;
-            }
-            
-            .pix-card-title {
-                font-size: 20px;
-            }
-            
-            .pix-card-subtitle {
-                font-size: 14px;
-            }
-            
-            .pix-step {
-                padding-left: 35px;
-                margin-bottom: 15px;
-                font-size: 14px;
-            }
-            
-            .pix-step:before {
-                width: 25px;
-                height: 25px;
-                font-size: 13px;
-            }
-            
-            .pix-confirm-btn {
-                padding: 10px 20px;
-                font-size: 14px;
-                max-width: 180px;
-            }
-        }
-      .titulo{
-        background-color:#DA291C;
-        color:white;
-        border-radius:5px;
-        margin-left:0px;
-        margin-top:0px;
-        
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
       }
-      
-      .pai{
-        margin-left:0px;
-        padding:0;
-        background-color:#DA291C;
-       border-radius:10px;
-        padding:50px;
+
+      .valor {
+        font-size: 26px;
       }
-      header{
-        background-color:#DA291C;
-       padding:15px;
-      }
-    </style>
+    }
+  </style>
 </head>
 <body>
- <header>
-      <img class="titulo" class="mdn-Menu-logo" src="https://i.imgur.com/P269qAV.png" alt="Logo da Claro">
-      </header>
-  <br>
-    <div class="container">
-      
-        
-        
-        <div class="fatura">
-            
-            
-            <div class="fatura-residencial">
-                <h3>Fatura residencial</h3>
-                <p>Contrato</p>
-                <h3>Maio 2025</h3>
-                <div class="valor-fatura">R$ 119,00</div>
-               
-                <div class="checkbox">
-                    
-                    <label for="pronta-para-pagar">Pronta para pagar<br><small>Vence dia 23 de Maio</small></label> 
-                </div>
-				
-            </div>
-            
-            <div class="pix">
-                <h3>Pague com PIX</h3>
-                <div class="codigo-pix" id="codigo-pix">00020101021226830014BR.GOV.BCB.PIX2561qrcodespix.sejaefi.com.br/v2/ab97fbe632714f5bb7cadd2ab4704b745204000053039865802BR5905EFISA6008SAOPAULO62070503***6304CC3F</div>
-                <button class="btn-copiar" onclick="copiarPix()">Copiar código PIX</button>
-            </div>
-        </div>
-        
-        
-        
-        <div class="resumo-fatura">
-            <h3>Resumo da fatura</h3>
-            <table>
-                <tr>
-                    <td>Internet<br><small>Claro net virtua</small></td>
-                    <td>R$ 119,00</td>
-                </tr>
-                
-            </table>
-        </div>
-        
-        <footer>
-            <div class="links-rodape">
-                <a href="#">Plataforma:</a>
-                <a href="#">Claro</a>
-                <a href="#">Polí­tica de Privacidade</a>
-                <a href="#">Portal de Privacidade</a>
-            </div>
-            <p>© 2025 Claro. Todos os direitos reservados - CNPJ: 40.432.544/0001-47 -<br>Rua Henri Dunant, 780 - São Paulo - SP</p>
-        </footer>
-    </div>
-    
-    <!-- Overlay e Card de InstruÃ§Ãµes PIX -->
-    <div class="overlay" id="pixOverlay"></div>
-    
-    <div class="pix-instruction-card" id="pixInstructionCard">
-        <div class="pix-card-header">
-            <div class="pix-success-icon pix-pulse">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                </svg>
-            </div>
-            <h3 class="pix-card-title">Código PIX copiado!</h3>
-            <p class="pix-card-subtitle">Siga estas instruções para realizar o pagamento:</p>
-        </div>
-        
-        <div class="pix-card-body">
-            <ul class="pix-steps">
-                <li class="pix-step">
-                    <strong>Abra o aplicativo do seu banco</strong> ou internet banking
-                </li>
-                <li class="pix-step">
-                    Acesse a seção <strong>PIX</strong> ou <strong>Pagamentos</strong>
-                </li>
-                <li class="pix-step">
-                    Selecione a opção <strong>"Pagar com PIX Copia e Cola"</strong>
-                </li>
-                <li class="pix-step">
-                    <strong>Cole o código</strong> no campo indicado
-                </li>
-                <li class="pix-step">
-                    <strong>Confira os dados</strong> e confirme o pagamento
-                </li>
-            </ul>
-        </div>
-        
-        <div class="pix-card-footer">
-            <button class="pix-confirm-btn" onclick="fecharPixCard()">Entendido</button>
-        </div>
-    </div>
-    
-    <script>
-    function copiarPix() {
-        const codigoPix = document.getElementById('codigo-pix');
-        const textoParaCopiar = codigoPix.textContent;
-        
-        // Cria um elemento textarea temporÃ¡rio
-        const textarea = document.createElement('textarea');
-        textarea.value = textoParaCopiar;
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        textarea.select();
-        
-        try {
-            // Usa apenas o mÃ©todo document.execCommand
-            const successful = document.execCommand('copy');
-            
-            if (successful) {
-                // Mostra o card de confirmaÃ§Ã£o
-                mostrarPixCard();
-                
-                // Efeito visual de seleÃ§Ã£o (opcional)
-                const range = document.createRange();
-                range.selectNode(codigoPix);
-                const selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(range);
-                
-                setTimeout(() => {
-                    selection.removeAllRanges();
-                }, 1000);
-            } else {
-                alert('NÃ£o foi possÃ­vel copiar. Tente manualmente.');
-            }
-            
-        } catch (err) {
-            console.error('Erro ao copiar:', err);
-            alert('Erro ao copiar. Selecione e copie manualmente.');
-            
-        } finally {
-            // Limpeza
-            document.body.removeChild(textarea);
-        }
-    }
 
-    function mostrarPixCard() {
-        const overlay = document.getElementById('pixOverlay');
-        const card = document.getElementById('pixInstructionCard');
-        
-        overlay.style.display = 'block';
-        card.style.display = 'block';
-        
-        // ForÃ§a reflow para ativar a animaÃ§Ã£o
-        void overlay.offsetWidth;
-        void card.offsetWidth;
-        
-        overlay.classList.add('active');
-        card.classList.add('active');
-    }
+  <header>MinhaClaro</header>
 
-    function fecharPixCard() {
-        const overlay = document.getElementById('pixOverlay');
-        const card = document.getElementById('pixInstructionCard');
-        
-        overlay.classList.remove('active');
-        card.classList.remove('active');
-        
-        setTimeout(() => {
-            overlay.style.display = 'none';
-            card.style.display = 'none';
-        }, 300);
+  <div class="container">
+    <div class="titulo">Fatura residencial</div>
+    <div>Contrato</div>
+    <div style="margin-top: 10px;"><strong>Maio 2025</strong></div>
+    <div class="valor">R$ 119,00</div>
+    <div class="vencimento">Pronta para pagar <br> Vence dia 23 de Maio</div>
+
+    <div class="pix-box">
+      <div><strong>Pague com PIX</strong></div>
+      <div class="pix-code" id="pixCode">
+        00020101021226830014BR.GOV.BCB.PIX2561qrcodespix.sejaefi.com.br/v2/ab97fbe63271f45bb7cad2ab4704b74524008053039865802BR5905EFISA6008SAOPAULO062807503***6934CC3F
+      </div>
+      <button class="copy-btn" onclick="copyPIX()">Copiar código PIX</button>
+    </div>
+
+    <div class="resumo">
+      <strong>Resumo da fatura</strong><br>
+      Internet<br>
+      Claro net virtua<br><br>
+      <strong>Total: R$ 119,00</strong>
+    </div>
+  </div>
+
+  <div class="footer">
+    Plataforma: Claro | Política de Privacidade<br>
+    © 2025 Claro. Todos os direitos reservados – CNPJ: 40.432.544/0001-47<br>
+    Rua Henri Dunant, 780 - São Paulo - SP
+  </div>
+
+  <script>
+    function copyPIX() {
+      const code = document.getElementById("pixCode").textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        alert("Código PIX copiado com sucesso!");
+      });
     }
-    
-    // Fechar ao clicar no overlay
-    document.getElementById('pixOverlay').addEventListener('click', fecharPixCard);
-</script>
+  </script>
+
 </body>
 </html>
