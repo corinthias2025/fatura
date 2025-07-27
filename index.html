@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Fatura Claro - Maio 2025</title>
   <style>
     * {
@@ -180,7 +180,7 @@
     <div class="pix-box">
       <div><strong>Pague com PIX</strong></div>
       <div class="pix-code" id="pixCode">
-        00020101021226830014BR.GOV.BCB.PIX2561qrcodespix.sejaefi.com.br/v2/ab97fbe63271f45bb7cad2ab4704b74524008053039865802BR5905EFISA6008SAOPAULO062807503***6934CC3F
+        Carregando código PIX...
       </div>
       <button class="copy-btn" onclick="copyPIX()">Copiar código PIX</button>
     </div>
@@ -209,8 +209,44 @@
   </div>
 
   <script>
+    const pixCodeElement = document.getElementById('pixCode');
+    const PIX_JSON_PATH = './pix-keys.json'; // caminho do arquivo JSON com as chaves
+
+    // Função para carregar as chaves do arquivo JSON e rotacionar
+    async function loadAndRotatePIX() {
+      try {
+        const response = await fetch(PIX_JSON_PATH);
+        if (!response.ok) throw new Error('Erro ao carregar arquivo JSON');
+
+        const pixKeys = await response.json();
+        if (!Array.isArray(pixKeys) || pixKeys.length === 0) {
+          pixCodeElement.textContent = 'Nenhuma chave PIX encontrada.';
+          return;
+        }
+
+        // Pega o índice da última chave exibida do localStorage
+        let lastIndex = parseInt(localStorage.getItem('pixLastIndex'));
+        if (isNaN(lastIndex)) lastIndex = -1;
+
+        // Próxima chave (circular)
+        const nextIndex = (lastIndex + 1) % pixKeys.length;
+        const nextPixKey = pixKeys[nextIndex];
+
+        // Atualiza o texto do PIX
+        pixCodeElement.textContent = nextPixKey;
+
+        // Salva o índice atual no localStorage para próxima rotação
+        localStorage.setItem('pixLastIndex', nextIndex);
+      } catch (error) {
+        pixCodeElement.textContent = 'Erro ao carregar chaves PIX.';
+        console.error(error);
+      }
+    }
+
+    loadAndRotatePIX();
+
     function copyPIX() {
-      const code = document.getElementById("pixCode").textContent;
+      const code = pixCodeElement.textContent;
       navigator.clipboard.writeText(code).then(() => {
         document.getElementById("modalOverlay").style.display = "flex";
       });
