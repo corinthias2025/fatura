@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pagamento da Fatura Claro</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      color: #333;
+    }
+
+    .header {
+      background-color: #e60000;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      padding: 30px 20px;
+    }
+
+    .box {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    .pix-code {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 15px;
+      color: #000;
+      user-select: all;
+      margin-bottom: 10px;
+      word-break: break-word;
+      line-height: 1.6;
+    }
+
+    .copy-button {
+      background-color: #e60000;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    .copy-button:active {
+      background-color: #c40000;
+    }
+
+    @media print {
+      .copy-button {
+        display: none !important;
+      }
+
+      .pix-code {
+        white-space: nowrap !important;
+        overflow: visible !important;
+      }
+
+      .header {
+        background-color: #e60000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <img src="https://www.claro.com.br/static/email/202105/06140001/images/logo-cabecalho.png" alt="Logo Claro" style="height:30px;">
+  </div>
+
+  <div class="container">
+    <div class="box">
+
+      <p><strong>Valor da Fatura:</strong> R$119,00</p>
+      <p><strong>Chave PIX para pagamento:</strong></p>
+
+      <div class="pix-code" id="pix">
+        <span id="chave-pix">
+          0002010102122683<wbr>0014BR.GOV.BCB.PIX2561<wbr>qrcodespix.sejaefi.com.br/v2/<wbr>e6230250bb14420ab13945513e9e03c7<wbr>5204000053039865802BR5905EFISA<wbr>6008SAOPAULO62070503***6304AF76
+        </span>
+      </div>
+
+      <button class="copy-button" onclick="copiarPix()">Copiar chave PIX</button>
+
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=00020101021226830014BR.GOV.BCB.PIX2561qrcodespix.sejaefi.com.br/v2/e6230250bb14420ab13945513e9e03c75204000053039865802BR5905EFISA6008SAOPAULO62070503***6304AF76" alt="QR Code PIX" style="width: 150px; height: 150px;"/>
+      </div>
+
+      <p><strong>Instruções para pagamento:</strong></p>
+      <ol>
+        <li>Copie a chave PIX acima.</li>
+        <li>Acesse o aplicativo do seu banco ou instituição financeira.</li>
+        <li>Escolha a opção de pagamento via PIX.</li>
+        <li>Cole a chave copiada no campo solicitado.</li>
+        <li>Confirme os dados e realize o pagamento.</li>
+      </ol>
+
+      <p style="font-size: 13px; color: #777; margin-top: 15px;">
+        Após o pagamento, a compensação poderá levar alguns minutos. Guarde o comprovante.
+      </p>
+
+    </div>
+  </div>
+
+  <script>
+    function copiarPix() {
+      const texto = document.getElementById("chave-pix").innerText.replace(/\s+/g, '');
+      navigator.clipboard.writeText(texto).then(function () {
+        alert("Chave PIX copiada com sucesso!");
+      }, function () {
+        alert("Erro ao copiar a chave PIX.");
+      });
+    }
+  </script>
+
+</body>
+</html>
